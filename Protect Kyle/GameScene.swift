@@ -20,6 +20,7 @@ class GameScene: SKScene {
     var platty=SKSpriteNode(imageNamed: "Platty")
     var platty2=SKSpriteNode(imageNamed: "Platty")
     var platty3=SKSpriteNode(imageNamed: "Platty")
+    var zombie=SKSpriteNode(imageNamed: "realLifePatrick")
     
     var myCamera:SKCameraNode?
     
