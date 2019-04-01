@@ -11,55 +11,79 @@ import GameplayKit
 
 class GameScene: SKScene {
     
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
+    var background=SKSpriteNode(imageNamed: "background")
+    var background2=SKSpriteNode(imageNamed: "background2")
+    var background3=SKSpriteNode(imageNamed: "background")
+    var background4=SKSpriteNode(imageNamed: "background2")
+    var background5=SKSpriteNode(imageNamed: "background")
+    var background6=SKSpriteNode(imageNamed: "background2")
+    var platty=SKSpriteNode(imageNamed: "Platty")
+    var platty2=SKSpriteNode(imageNamed: "Platty")
+    var platty3=SKSpriteNode(imageNamed: "Platty")
+    
+    var myCamera:SKCameraNode?
+    
+    var rightPressed:Bool=false
+    var leftPressed:Bool=false
     
     override func didMove(to view: SKView) {
+        addChild(platty)
+        platty.zPosition = 2
+        platty.setScale(0.5)
+        addChild(background)
+        background.setScale(4.35)
+        background.zPosition = 1
         
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
+        addChild(background2)
+        background2.setScale(4.35)
+        background2.zPosition = 1
+        background2.position.x = -1100
         
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
+        addChild(background3)
+        background3.setScale(4.35)
+        background3.zPosition = 1
+        background3.position.x = -2210
         
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
+        addChild(background4)
+        background4.setScale(4.35)
+        background4.zPosition = 1
+        background4.position.x = 1100
+        
+        addChild(background5)
+        background5.setScale(4.35)
+        background5.zPosition = 1
+        background5.position.x = 2210
+        
+        addChild(background6)
+        background6.setScale(4.35)
+        background6.zPosition = 1
+        background6.position.x = 3300
+        
+        addChild(platty2)
+        platty2.position.x = 3300
+        
+        
+        
+        
+       
+        myCamera=SKCameraNode()
+        self.camera=myCamera
+        addChild(myCamera!)
+       
     }
     
     
     func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
+        
+        
     }
     
     func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
+        
     }
     
     func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
+        
     }
     
     override func mouseDown(with event: NSEvent) {
@@ -76,17 +100,50 @@ class GameScene: SKScene {
     
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
-        case 0x31:
-            if let label = self.label {
-                label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-            }
+        case 0:
+            leftPressed=true
+        case 2:
+            rightPressed=true
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
-    }
+    }//Key Down
+    override func keyUp(with event: NSEvent) {
+        switch event.keyCode {
+        case 0:
+            leftPressed=false
+        case 2:
+            rightPressed=false
+        default:
+            print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
+        }
+    }//Key Up
+    func moveCamera()
+    {
+        if rightPressed==true
+        {
+            myCamera!.position.x += 15
+        }
+        if leftPressed==true
+        {
+            myCamera!.position.x -= 15
+        }
+        if myCamera!.position.x > 2250
+        {
+            myCamera!.position.x = -2200
+        }
+        if myCamera!.position.x < -2200
+        {
+            myCamera!.position.x = 2200
+        }
+    } //moveCamera()
+
+    
+    
     
     
     override func update(_ currentTime: TimeInterval) {
+        moveCamera()
         // Called before each frame is rendered
     }
 }
