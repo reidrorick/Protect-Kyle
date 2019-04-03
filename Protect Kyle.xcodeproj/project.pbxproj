@@ -16,6 +16,7 @@
 		9F27FF5F224D589300710120 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F27FF5D224D589300710120 /* Main.storyboard */; };
 		9F27FF6B224D589300710120 /* Protect_KyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27FF6A224D589300710120 /* Protect_KyleTests.swift */; };
 		9F27FF76224D589300710120 /* Protect_KyleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27FF75224D589300710120 /* Protect_KyleUITests.swift */; };
+		9F98CE542255333C009B1A33 /* random.swift.zip in Resources */ = {isa = PBXBuildFile; fileRef = 9F98CE532255333C009B1A33 /* random.swift.zip */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		9F27FF71224D589300710120 /* Protect KyleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Protect KyleUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F27FF75224D589300710120 /* Protect_KyleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protect_KyleUITests.swift; sourceTree = "<group>"; };
 		9F27FF77224D589300710120 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9F98CE532255333C009B1A33 /* random.swift.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = random.swift.zip; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 				9F27FF5D224D589300710120 /* Main.storyboard */,
 				9F27FF60224D589300710120 /* Info.plist */,
 				9F27FF61224D589300710120 /* Protect_Kyle.entitlements */,
+				9F98CE532255333C009B1A33 /* random.swift.zip */,
 			);
 			path = "Protect Kyle";
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 				9F27FF5C224D589300710120 /* Assets.xcassets in Resources */,
 				9F27FF56224D589300710120 /* Actions.sks in Resources */,
 				9F27FF5F224D589300710120 /* Main.storyboard in Resources */,
+				9F98CE542255333C009B1A33 /* random.swift.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

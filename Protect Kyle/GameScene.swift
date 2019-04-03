@@ -12,11 +12,12 @@ import GameplayKit
 class GameScene: SKScene {
     
     var background=SKSpriteNode(imageNamed: "background")
-    var background2=SKSpriteNode(imageNamed: "background2")
+    var background2=SKSpriteNode(imageNamed: "background")
     var background3=SKSpriteNode(imageNamed: "background")
-    var background4=SKSpriteNode(imageNamed: "background2")
+    var background4=SKSpriteNode(imageNamed: "background")
     var background5=SKSpriteNode(imageNamed: "background")
-    var background6=SKSpriteNode(imageNamed: "background2")
+    var background6=SKSpriteNode(imageNamed: "background")
+    var backgroundLoop=SKSpriteNode(imageNamed: "background")
     var platty=SKSpriteNode(imageNamed: "Platty")
     var platty2=SKSpriteNode(imageNamed: "Platty")
     var platty3=SKSpriteNode(imageNamed: "Platty")
@@ -26,42 +27,62 @@ class GameScene: SKScene {
     
     var rightPressed:Bool=false
     var leftPressed:Bool=false
+
     
     override func didMove(to view: SKView) {
         addChild(platty)
         platty.zPosition = 2
         platty.setScale(0.5)
+        platty.position.x = -background.size.width
+       
         addChild(background)
-        background.setScale(4.35)
+        background.setScale(1)
         background.zPosition = 1
         
         addChild(background2)
-        background2.setScale(4.35)
+        background2.setScale(1)
         background2.zPosition = 1
-        background2.position.x = -1100
+        background2.position.x = background.size.width
         
         addChild(background3)
-        background3.setScale(4.35)
+        background3.setScale(1)
         background3.zPosition = 1
-        background3.position.x = -2210
+        background3.position.x = background.size.width*2
         
         addChild(background4)
-        background4.setScale(4.35)
+        background4.setScale(1)
         background4.zPosition = 1
-        background4.position.x = 1100
+        background4.position.x = background.size.width*3
         
         addChild(background5)
-        background5.setScale(4.35)
+        background5.setScale(1)
         background5.zPosition = 1
-        background5.position.x = 2210
+        background5.position.x = background.size.width*4
         
         addChild(background6)
-        background6.setScale(4.35)
+        background6.setScale(1)
         background6.zPosition = 1
-        background6.position.x = 3300
-        
+        background6.position.x = background.size.width*5
         addChild(platty2)
-        platty2.position.x = 3300
+        platty2.zPosition = 2
+        platty2.setScale(0.5)
+        platty2.position.x = background.size.width*5
+        
+        
+        addChild(backgroundLoop)
+        backgroundLoop.zPosition = 1
+        backgroundLoop.position.x = -background.size.width
+        
+        
+        
+        
+
+        
+       
+        
+        
+        
+        
         
         
         
@@ -105,6 +126,8 @@ class GameScene: SKScene {
             leftPressed=true
         case 2:
             rightPressed=true
+        case 1:
+            print(myCamera!.position.x)
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
@@ -129,13 +152,13 @@ class GameScene: SKScene {
         {
             myCamera!.position.x -= 15
         }
-        if myCamera!.position.x > 2250
+        if myCamera!.position.x > background.size.width*5 && rightPressed == true
         {
-            myCamera!.position.x = -2200
+            myCamera!.position.x = -background.size.width
         }
-        if myCamera!.position.x < -2200
+        if myCamera!.position.x < -background.size.width + 4 && leftPressed == true
         {
-            myCamera!.position.x = 2200
+            myCamera!.position.x = background.size.width*5 + 1
         }
     } //moveCamera()
 
