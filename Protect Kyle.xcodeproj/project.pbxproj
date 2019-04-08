@@ -16,7 +16,8 @@
 		9F27FF5F224D589300710120 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F27FF5D224D589300710120 /* Main.storyboard */; };
 		9F27FF6B224D589300710120 /* Protect_KyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27FF6A224D589300710120 /* Protect_KyleTests.swift */; };
 		9F27FF76224D589300710120 /* Protect_KyleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27FF75224D589300710120 /* Protect_KyleUITests.swift */; };
-		9F98CE542255333C009B1A33 /* random.swift.zip in Resources */ = {isa = PBXBuildFile; fileRef = 9F98CE532255333C009B1A33 /* random.swift.zip */; };
+		9F58808F225BC45D00F82600 /* ZombieClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F58808E225BC45D00F82600 /* ZombieClass.swift */; };
+		9F588091225BD31500F82600 /* random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F588090225BD31500F82600 /* random.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,7 +54,8 @@
 		9F27FF71224D589300710120 /* Protect KyleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Protect KyleUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F27FF75224D589300710120 /* Protect_KyleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protect_KyleUITests.swift; sourceTree = "<group>"; };
 		9F27FF77224D589300710120 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9F98CE532255333C009B1A33 /* random.swift.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = random.swift.zip; sourceTree = "<group>"; };
+		9F58808E225BC45D00F82600 /* ZombieClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZombieClass.swift; sourceTree = "<group>"; };
+		9F588090225BD31500F82600 /* random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = random.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,12 +110,13 @@
 				9F27FF53224D589300710120 /* GameScene.sks */,
 				9F27FF55224D589300710120 /* Actions.sks */,
 				9F27FF57224D589300710120 /* GameScene.swift */,
+				9F58808E225BC45D00F82600 /* ZombieClass.swift */,
 				9F27FF59224D589300710120 /* ViewController.swift */,
 				9F27FF5B224D589300710120 /* Assets.xcassets */,
 				9F27FF5D224D589300710120 /* Main.storyboard */,
 				9F27FF60224D589300710120 /* Info.plist */,
 				9F27FF61224D589300710120 /* Protect_Kyle.entitlements */,
-				9F98CE532255333C009B1A33 /* random.swift.zip */,
+				9F588090225BD31500F82600 /* random.swift */,
 			);
 			path = "Protect Kyle";
 			sourceTree = "<group>";
@@ -244,7 +247,6 @@
 				9F27FF5C224D589300710120 /* Assets.xcassets in Resources */,
 				9F27FF56224D589300710120 /* Actions.sks in Resources */,
 				9F27FF5F224D589300710120 /* Main.storyboard in Resources */,
-				9F98CE542255333C009B1A33 /* random.swift.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,8 +271,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F58808F225BC45D00F82600 /* ZombieClass.swift in Sources */,
 				9F27FF5A224D589300710120 /* ViewController.swift in Sources */,
 				9F27FF58224D589300710120 /* GameScene.swift in Sources */,
+				9F588091225BD31500F82600 /* random.swift in Sources */,
 				9F27FF52224D589300710120 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

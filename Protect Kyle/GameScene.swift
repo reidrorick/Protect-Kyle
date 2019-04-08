@@ -92,7 +92,7 @@ class GameScene: SKScene {
         self.camera=myCamera
         addChild(myCamera!)
        
-    }
+    }//didMove
     
     
     func touchDown(atPoint pos : CGPoint) {
@@ -152,15 +152,25 @@ class GameScene: SKScene {
         {
             myCamera!.position.x -= 15
         }
-        if myCamera!.position.x > background.size.width*5 && rightPressed == true
+        if myCamera!.position.x > background.size.width*5 - 15 && rightPressed == true
         {
             myCamera!.position.x = -background.size.width
         }
-        if myCamera!.position.x < -background.size.width + 4 && leftPressed == true
+        if myCamera!.position.x < -background.size.width + 15 && leftPressed == true
         {
-            myCamera!.position.x = background.size.width*5 + 1
+            myCamera!.position.x = background.size.width*5
         }
     } //moveCamera()
+    func spawnZombies()
+    {
+        let tempZombie = zombie.copy() as! SKSpriteNode
+        let zombieSize=random(min:0.05, max: 0.15)
+        tempZombie.setScale(zombieSize)
+        
+        tempZombie.position.x = size.width/2+tempZombie.size.width/2
+        tempZombie.position.y = size.height/2+tempZombie.size.height/2
+        
+    }
 
     
     
