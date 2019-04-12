@@ -21,13 +21,19 @@ class GameScene: SKScene {
     var platty=SKSpriteNode(imageNamed: "Platty")
     var platty2=SKSpriteNode(imageNamed: "Platty")
     var platty3=SKSpriteNode(imageNamed: "Platty")
-    var zombie=SKSpriteNode(imageNamed: "realLifePatrick")
+
     
     var myCamera:SKCameraNode?
     
     var rightPressed:Bool=false
     var leftPressed:Bool=false
-
+    
+    var timer:CGFloat=0
+    var relativeDist:CGFloat=0
+    
+    let zombie=ZombieClass()
+    
+    
     
     override func didMove(to view: SKView) {
         addChild(platty)
@@ -72,6 +78,10 @@ class GameScene: SKScene {
         addChild(backgroundLoop)
         backgroundLoop.zPosition = 1
         backgroundLoop.position.x = -background.size.width
+        
+        
+        
+        
         
         
         
@@ -163,21 +173,35 @@ class GameScene: SKScene {
     } //moveCamera()
     func spawnZombies()
     {
-        let tempZombie = zombie.copy() as! SKSpriteNode
-        let zombieSize=random(min:0.05, max: 0.15)
+        let tempZombie = zombie.zombieSprite.copy() as! SKSpriteNode
+        let zombieSize = 20/relativeDist
+        relativeDist = -size.height/2 - tempZombie.position.y
         tempZombie.setScale(zombieSize)
         
-        tempZombie.position.x = size.width/2+tempZombie.size.width/2
-        tempZombie.position.y = size.height/2+tempZombie.size.height/2
+        tempZombie.position.x = random(min: -background.size.width, max: background.size.width*5)
+        tempZombie.position.y = 0
+        addChild(tempZombie)
+        tempZombie.zPosition = 3
+        
+        let actions = SKAction.sequence([SKAction.moveTo(y: -size.height/2-tempZombie.size.height, duration: 10)])
+        tempZombie.run(actions)
         
     }
+    
 
     
     
     
     
     override func update(_ currentTime: TimeInterval) {
+        timer += 1/60
         moveCamera()
+        if timer > 0
+        {
+            spawnZombies()
+            timer = 0
+        }
+    
         // Called before each frame is rendered
     }
 }

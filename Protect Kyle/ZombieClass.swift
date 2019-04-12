@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import SpriteKit
 
 class ZombieClass
 {
@@ -17,6 +17,7 @@ class ZombieClass
     var health:Int = 0
     var strength:Int = 0
     
+    let zombieSprite=SKSpriteNode(imageNamed: "realLifePatrick")
     
     
 }
