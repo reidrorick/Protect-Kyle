@@ -183,10 +183,38 @@ class GameScene: SKScene {
         addChild(tempZombie)
         tempZombie.zPosition = 3
         
-        let actions = SKAction.sequence([SKAction.moveTo(y: -size.height/2-tempZombie.size.height, duration: 10)])
-        tempZombie.run(actions)
+        let actions = SKAction.sequence([SKAction.moveTo(y: -size.height/2-tempZombie.size.height, duration: 10),SKAction.removeFromParent()])
         
-    }
+        let scale = SKAction.sequence([SKAction.scale(to: 2, duration: 10)])
+        tempZombie.run(actions)
+        tempZombie.run(scale)
+        
+        if tempZombie.position.x >= background.size.width && tempZombie.position.x <= -background.size.width/2
+        {
+            
+            let temp2Zombie = zombie.zombieSprite.copy() as! SKSpriteNode
+            temp2Zombie.position=temp2Zombie.position
+            temp2Zombie.setScale(tempZombie.xScale)
+            
+            
+            temp2Zombie.zPosition = 3
+            addChild(temp2Zombie)
+            
+            temp2Zombie.position.x = temp2Zombie.position.x + background.size.width*5 + background.size.width
+            let actions2 = SKAction.sequence([SKAction.moveTo(y: -size.height/2-temp2Zombie.size.height, duration: 10),SKAction.removeFromParent()])
+            let scale2 = SKAction.sequence([SKAction.scale(to: 2, duration: 10)])
+            temp2Zombie.run(scale2)
+            temp2Zombie.run(actions2)
+            
+            
+        }
+        
+        }
+            
+        
+        
+        
+    
     
 
     
@@ -205,3 +233,4 @@ class GameScene: SKScene {
         // Called before each frame is rendered
     }
 }
+
