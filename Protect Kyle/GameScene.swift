@@ -11,6 +11,8 @@ import GameplayKit
 
 class GameScene: SKScene {
     
+
+    
     var background=SKSpriteNode(imageNamed: "background")
     var background2=SKSpriteNode(imageNamed: "background")
     var background3=SKSpriteNode(imageNamed: "background")
@@ -21,21 +23,32 @@ class GameScene: SKScene {
     var platty=SKSpriteNode(imageNamed: "Platty")
     var platty2=SKSpriteNode(imageNamed: "Platty")
     var platty3=SKSpriteNode(imageNamed: "Platty")
+    var gun=SKSpriteNode(imageNamed: "Scar")
+    var target=SKSpriteNode(imageNamed: "target")
 
     
     var myCamera:SKCameraNode?
     
     var rightPressed:Bool=false
     var leftPressed:Bool=false
+    var mousePressed:Bool=false
     
     var timer:CGFloat=0
     var relativeDist:CGFloat=0
     
     let zombie=ZombieClass()
-    
+    var theView:SKView?
     
     
     override func didMove(to view: SKView) {
+        
+        theView=view
+        
+        // Create a tracking area object with self as the owner (i.e., the recipient of mouse-tracking messages
+        let trackingArea = NSTrackingArea(rect: view.frame, options: [.activeInKeyWindow, .mouseMoved], owner: self, userInfo: nil)
+        // Add the tracking area to the view
+        view.addTrackingArea(trackingArea)
+        
         addChild(platty)
         platty.zPosition = 2
         platty.setScale(0.5)
@@ -79,6 +92,14 @@ class GameScene: SKScene {
         backgroundLoop.zPosition = 1
         backgroundLoop.position.x = -background.size.width
         
+        addChild(gun)
+        gun.position.y = -background.size.height/2 + gun.size.height/2
+        gun.zPosition = 4
+        
+        addChild(target)
+        target.zPosition = 3.5
+        target.setScale(0.05)
+        
         
         
         
@@ -104,18 +125,19 @@ class GameScene: SKScene {
        
     }//didMove
     
+
     
     func touchDown(atPoint pos : CGPoint) {
-        
+        mousePressed=true
         
     }
     
     func touchMoved(toPoint pos : CGPoint) {
-        
+        mousePressed=true
     }
     
     func touchUp(atPoint pos : CGPoint) {
-        
+        mousePressed=false
     }
     
     override func mouseDown(with event: NSEvent) {
@@ -124,10 +146,17 @@ class GameScene: SKScene {
     
     override func mouseDragged(with event: NSEvent) {
         self.touchMoved(toPoint: event.location(in: self))
+        target.position=event.location(in: self)
+        
     }
     
     override func mouseUp(with event: NSEvent) {
         self.touchUp(atPoint: event.location(in: self))
+    }
+    
+    override func mouseMoved(with event: NSEvent) {
+        target.position=event.location(in: self)
+        print(target.position)
     }
     
     override func keyDown(with event: NSEvent) {
@@ -178,7 +207,7 @@ class GameScene: SKScene {
         relativeDist = -size.height/2 - tempZombie.position.y
         tempZombie.setScale(zombieSize)
         
-        tempZombie.position.x = random(min: -background.size.width, max: background.size.width*5)
+        tempZombie.position.x = random(min: -background.size.width/2, max: background.size.width*5 + background.size.width/2)
         tempZombie.position.y = 0
         addChild(tempZombie)
         tempZombie.zPosition = 3
@@ -189,7 +218,7 @@ class GameScene: SKScene {
         tempZombie.run(actions)
         tempZombie.run(scale)
         
-        if tempZombie.position.x >= background.size.width && tempZombie.position.x <= -background.size.width/2
+        if tempZombie.position.x >= background.size.width*5 - background.size.width/2
         {
             
             let temp2Zombie = zombie.zombieSprite.copy() as! SKSpriteNode
@@ -200,7 +229,7 @@ class GameScene: SKScene {
             temp2Zombie.zPosition = 3
             addChild(temp2Zombie)
             
-            temp2Zombie.position.x = temp2Zombie.position.x + background.size.width*5 + background.size.width
+            temp2Zombie.position.x = tempZombie.position.x - background.size.width*6
             let actions2 = SKAction.sequence([SKAction.moveTo(y: -size.height/2-temp2Zombie.size.height, duration: 10),SKAction.removeFromParent()])
             let scale2 = SKAction.sequence([SKAction.scale(to: 2, duration: 10)])
             temp2Zombie.run(scale2)
@@ -209,7 +238,18 @@ class GameScene: SKScene {
             
         }
         
+            if target.contains(tempZombie.position)
+            {
+                if mousePressed==true
+                {
+                    tempZombie.removeFromParent()
+                }
+            }
+            
+        
+        
         }
+    
             
         
         
