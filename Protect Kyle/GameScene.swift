@@ -128,12 +128,21 @@ class GameScene: SKScene {
 
     
     func touchDown(atPoint pos : CGPoint) {
-        mousePressed=true
-        
-    }
+        for x in nodes(at: pos)
+        {
+            if x.name != nil
+            {
+                if x.name! == "realLifePatrick"
+                {
+                    x.removeFromParent()
+                    
+                    
+                }
+            }//!=nil
+        }//for loop
+    }//touchdown
     
     func touchMoved(toPoint pos : CGPoint) {
-        mousePressed=true
     }
     
     func touchUp(atPoint pos : CGPoint) {
@@ -142,7 +151,8 @@ class GameScene: SKScene {
     
     override func mouseDown(with event: NSEvent) {
         self.touchDown(atPoint: event.location(in: self))
-    }
+        
+    }//mouse down
     
     override func mouseDragged(with event: NSEvent) {
         self.touchMoved(toPoint: event.location(in: self))
@@ -152,6 +162,7 @@ class GameScene: SKScene {
     
     override func mouseUp(with event: NSEvent) {
         self.touchUp(atPoint: event.location(in: self))
+        
     }
     
     override func mouseMoved(with event: NSEvent) {
@@ -181,6 +192,7 @@ class GameScene: SKScene {
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
     }//Key Up
+    
     func moveCamera()
     {
         if rightPressed==true
@@ -206,7 +218,7 @@ class GameScene: SKScene {
         let zombieSize = 20/relativeDist
         relativeDist = -size.height/2 - tempZombie.position.y
         tempZombie.setScale(zombieSize)
-        
+        tempZombie.name="realLifePatrick"
         tempZombie.position.x = random(min: -background.size.width/2, max: background.size.width*5 + background.size.width/2)
         tempZombie.position.y = 0
         addChild(tempZombie)
@@ -224,7 +236,7 @@ class GameScene: SKScene {
             let temp2Zombie = zombie.zombieSprite.copy() as! SKSpriteNode
             temp2Zombie.position=temp2Zombie.position
             temp2Zombie.setScale(tempZombie.xScale)
-            
+            temp2Zombie.name="realLifePatrick"
             
             temp2Zombie.zPosition = 3
             addChild(temp2Zombie)
@@ -236,15 +248,10 @@ class GameScene: SKScene {
             temp2Zombie.run(actions2)
             
             
+            
         }
         
-            if target.contains(tempZombie.position)
-            {
-                if mousePressed==true
-                {
-                    tempZombie.removeFromParent()
-                }
-            }
+            
             
         
         
