@@ -307,6 +307,7 @@ class GameScene: SKScene {
                 if node.name!.contains("Zombie")
                 {
                     counter += 1
+                    print(counter)
                 }
             }
         }//zombies on screen counter
@@ -315,15 +316,33 @@ class GameScene: SKScene {
         if zNumb < zombieCount && timer ==  0
         {
             spawnZombies()
-            print(zNumb)
+            //print(zNumb)
         }
-        else if zNumb == zombieCount
+        else if counter < 2
         {
-            zombieCount = 1.5*zombieCount
-            timer += 15
+            let multiplier:CGFloat=1.5*zNumb
+            zombieCount = multiplier
+            timer = 15
+            print("Timer:\(timer)")
+            print("zNumb:\(zNumb)")
+            print("zombieCount:\(zombieCount)")
         }
+        
     }//rounds()
-            
+    
+    func time()
+    {
+        if timer > 0
+        {
+            timer -= 1/60
+            print("Timer:\(timer)")
+            if timer < 0
+            {
+                timer = 0
+                print("Timer:\(timer)")
+            }
+        }
+    }//time func
     
         
         
@@ -335,8 +354,9 @@ class GameScene: SKScene {
     
     
     override func update(_ currentTime: TimeInterval) {
-            moveCamera()
-            rounds()
+        time()
+        moveCamera()
+        rounds()
         // Called before each frame is rendered
     }
 }
