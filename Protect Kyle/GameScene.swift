@@ -25,6 +25,10 @@ class GameScene: SKScene {
     var platty3=SKSpriteNode(imageNamed: "Platty")
     var gun=SKSpriteNode(imageNamed: "Scar")
     var target=SKSpriteNode(imageNamed: "target")
+    
+    //LabelNodes
+    var roundLabel = SKLabelNode(fontNamed: "Chalkduster")
+    var roundLabel2 = SKLabelNode(fontNamed: "Chalkduster")
 
     //CameraNode
     var myCamera:SKCameraNode?
@@ -34,6 +38,9 @@ class GameScene: SKScene {
     var leftPressed:Bool=false
     var mousePressed:Bool=false
     var upgrade1:Bool=false
+    var timee:Bool=false
+    var ready:Bool=false
+    var cheater:Bool=false
     
     //Int
     var zombieNumb:Int=0
@@ -41,9 +48,10 @@ class GameScene: SKScene {
     //CGFloats
     var timer:CGFloat=0
     var relativeDist:CGFloat=0
-    var zombieCount:CGFloat=30
+    var zombieCount:CGFloat=15
     var zNumb:CGFloat=0
     
+    var roundNumb:Int=0
     //
     let zombie=ZombieClass()
     var theView:SKView?
@@ -106,6 +114,20 @@ class GameScene: SKScene {
         addChild(target)
         target.zPosition = 3.5
         target.setScale(0.05)
+        
+        roundLabel.position.y = size.height/2 - 50
+        roundLabel.fontColor = NSColor.blue
+        roundLabel.zPosition = 10
+        roundLabel.fontSize=26
+        addChild(roundLabel)
+        
+        roundLabel2.position.y = size.height/2 - 90
+        roundLabel2.fontColor = NSColor.blue
+        roundLabel2.zPosition = 10
+        roundLabel2.fontSize=32
+        addChild(roundLabel2)
+       
+        
         
         
         
@@ -220,6 +242,22 @@ class GameScene: SKScene {
             rightPressed=true
         case 1:
             print(myCamera!.position.x)
+        case 14:
+            if cheater==false
+            {
+                cheater=true
+                timer=0
+            }
+        case 15:
+            if timer < 1 && ready == false
+            {
+                ready=true
+                roundNumb += 1
+                print("Round Number:\(roundNumb)")
+            }
+        case 17:
+            roundNumb+=1
+            
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
@@ -230,6 +268,12 @@ class GameScene: SKScene {
             leftPressed=false
         case 2:
             rightPressed=false
+        case 14:
+            if cheater==true
+            {
+                cheater=false
+            }
+            
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
@@ -254,6 +298,7 @@ class GameScene: SKScene {
             myCamera!.position.x = background.size.width*5
         }
     } //moveCamera()
+    
     func spawnZombies()
     {
         let tempZombie = zombie.zombieSprite.copy() as! SKSpriteNode
@@ -307,44 +352,63 @@ class GameScene: SKScene {
                 if node.name!.contains("Zombie")
                 {
                     counter += 1
-                    print(counter)
+                    print("Counter:\(counter)")
                 }
             }
         }//zombies on screen counter
         
         
-        if zNumb < zombieCount && timer ==  0
+        if zNumb < zombieCount && timer ==  0 && ready == true
         {
             spawnZombies()
             //print(zNumb)
         }
-        else if counter < 2
+        else if counter < 2 && ready == true && timer == 0
         {
-            let multiplier:CGFloat=1.5*zNumb
-            zombieCount = multiplier
-            timer = 15
-            print("Timer:\(timer)")
-            print("zNumb:\(zNumb)")
-            print("zombieCount:\(zombieCount)")
+            if roundNumb < 7
+            {
+                zombieCount += 5
+                timer = 15
+                zNumb = 0
+                ready = false
+            }
+            if roundNumb > 7 && roundNumb < 15
+            {
+                zombieCount += zombieCount*1.25
+                timer = 15
+                ready = false
+            }
+            
+            
+            //print("Timer:\(timer)")
+            
         }
         
     }//rounds()
     
     func time()
     {
+        
+        if timer < 0
+        {
+            timer = 0
+        }
         if timer > 0
         {
-            timer -= 1/60
-            print("Timer:\(timer)")
             if timer < 0
             {
                 timer = 0
-                print("Timer:\(timer)")
             }
         }
+        print("Timer:\(timer)")
     }//time func
-    
-        
+    func updateLabels()
+    {
+        roundLabel.position.x = myCamera!.position.x + size.width/2 - 100
+        roundLabel2.position.x = myCamera!.position.x + size.width/2 - 100
+        roundLabel.text = "Round #"
+        roundLabel2.text = "\(roundNumb)"
+    }
         
     
     
@@ -354,6 +418,11 @@ class GameScene: SKScene {
     
     
     override func update(_ currentTime: TimeInterval) {
+        timer = timer - 1/60
+        print("zNumb:\(zNumb)")
+        print("zombieCount:\(zombieCount)")
+        
+        updateLabels()
         time()
         moveCamera()
         rounds()
