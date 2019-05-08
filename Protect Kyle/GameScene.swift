@@ -25,10 +25,12 @@ class GameScene: SKScene {
     var platty3=SKSpriteNode(imageNamed: "Platty")
     var gun=SKSpriteNode(imageNamed: "Scar")
     var target=SKSpriteNode(imageNamed: "target")
+    var menuPic=SKSpriteNode(imageNamed: "menu")
     
     //LabelNodes
     var roundLabel = SKLabelNode(fontNamed: "Chalkduster")
     var roundLabel2 = SKLabelNode(fontNamed: "Chalkduster")
+    var scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
 
     //CameraNode
     var myCamera:SKCameraNode?
@@ -41,6 +43,8 @@ class GameScene: SKScene {
     var timee:Bool=false
     var ready:Bool=false
     var cheater:Bool=false
+    var gameOver:Bool=false
+    var gamePaused:Bool=false
     
     //Int
     var zombieNumb:Int=0
@@ -50,8 +54,13 @@ class GameScene: SKScene {
     var relativeDist:CGFloat=0
     var zombieCount:CGFloat=15
     var zNumb:CGFloat=0
+    var score:CGFloat=0
     
+    //Integers
     var roundNumb:Int=0
+    var scoreInt:Int=0
+    var menuNumb:Int=0
+    
     //
     let zombie=ZombieClass()
     var theView:SKView?
@@ -66,35 +75,42 @@ class GameScene: SKScene {
         // Add the tracking area to the view
         view.addTrackingArea(trackingArea)
         
+        //Platty
         addChild(platty)
         platty.zPosition = 2
         platty.setScale(0.5)
         platty.position.x = -background.size.width
        
+        //Background1
         addChild(background)
         background.setScale(1)
         background.zPosition = 1
         
+        //Background2
         addChild(background2)
         background2.setScale(1)
         background2.zPosition = 1
         background2.position.x = background.size.width
         
+        //Background3
         addChild(background3)
         background3.setScale(1)
         background3.zPosition = 1
         background3.position.x = background.size.width*2
         
+        //Background4
         addChild(background4)
         background4.setScale(1)
         background4.zPosition = 1
         background4.position.x = background.size.width*3
         
+        //Background5
         addChild(background5)
         background5.setScale(1)
         background5.zPosition = 1
         background5.position.x = background.size.width*4
         
+        // Background6
         addChild(background6)
         background6.setScale(1)
         background6.zPosition = 1
@@ -104,28 +120,49 @@ class GameScene: SKScene {
         platty2.setScale(0.5)
         platty2.position.x = background.size.width*5
         
-        
+        //Backgroundloop
         addChild(backgroundLoop)
         backgroundLoop.zPosition = 1
         backgroundLoop.position.x = -background.size.width
         
-        
-        
+        //Target
         addChild(target)
         target.zPosition = 3.5
         target.setScale(0.05)
         
+        //RoundLabel1
         roundLabel.position.y = size.height/2 - 50
         roundLabel.fontColor = NSColor.blue
         roundLabel.zPosition = 10
         roundLabel.fontSize=26
         addChild(roundLabel)
         
+        //RoundLabel2
         roundLabel2.position.y = size.height/2 - 90
         roundLabel2.fontColor = NSColor.blue
         roundLabel2.zPosition = 10
         roundLabel2.fontSize=32
         addChild(roundLabel2)
+        
+        //ScoreLabel
+        scoreLabel.position.y = size.height/2 - 80
+        scoreLabel.fontColor = NSColor.blue
+        scoreLabel.zPosition = 10
+        scoreLabel.fontSize=32
+        addChild(scoreLabel)
+        
+        //MenuPic
+        menuPic.xScale = 1.5
+        menuPic.yScale = 1.25
+        menuPic.alpha = 0.5
+        menuPic.zPosition = 30
+        addChild(menuPic)
+        menuPic.isHidden = true
+        
+        
+        
+        
+        
        
         
         
@@ -163,18 +200,20 @@ class GameScene: SKScene {
             {
                 if x.name!.contains("Zombie")
                 {
+                    let roundNumber = CGFloat(roundNumb)
                     for thisNode in self.children
                     {
                         if thisNode.name != nil
                         {
                             if thisNode.name! == x.name!
                             {
-                                
                                 thisNode.removeFromParent()
+                                score += 5 + 0.5 * roundNumber
                             }//remove
                         }//!=nil
                     }//thisnode
                     x.removeFromParent()
+                    score += 5 + 0.5 * roundNumber
                 }//kill zombie
             }//!=nil
         }//for loop
@@ -236,18 +275,26 @@ class GameScene: SKScene {
     
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
+        //A
         case 0:
             leftPressed=true
+        //D
         case 2:
             rightPressed=true
+        //S
         case 1:
             print(myCamera!.position.x)
+        //Q
+        case 12:
+            menuNumb+=1
+        //E
         case 14:
             if cheater==false
             {
                 cheater=true
                 timer=0
             }
+        //R
         case 15:
             if timer < 1 && ready == false
             {
@@ -255,6 +302,7 @@ class GameScene: SKScene {
                 roundNumb += 1
                 print("Round Number:\(roundNumb)")
             }
+        //T
         case 17:
             roundNumb+=1
             
@@ -264,10 +312,20 @@ class GameScene: SKScene {
     }//Key Down
     override func keyUp(with event: NSEvent) {
         switch event.keyCode {
+        //A
         case 0:
             leftPressed=false
+        //D
         case 2:
             rightPressed=false
+        //Q
+        case 12:
+            if menuNumb > 1
+            {
+                menuNumb = 0
+            }
+        
+        //E
         case 14:
             if cheater==true
             {
@@ -312,9 +370,11 @@ class GameScene: SKScene {
         
         tempZombie.zPosition = 3
         
-        let actions = SKAction.sequence([SKAction.moveTo(y: -size.height/2-tempZombie.size.height, duration: 10),SKAction.removeFromParent()])
+        let zombieSpeed:Int = 20/roundNumb
         
-        let scale = SKAction.sequence([SKAction.scale(to: 2, duration: 10)])
+        let actions = SKAction.sequence([SKAction.moveTo(y: -size.height/2-tempZombie.size.height, duration: TimeInterval(zombieSpeed)),SKAction.removeFromParent()])
+        
+        let scale = SKAction.sequence([SKAction.scale(to: 2, duration: TimeInterval(zombieSpeed))])
         tempZombie.run(actions)
         tempZombie.run(scale)
         
@@ -330,8 +390,8 @@ class GameScene: SKScene {
                 addChild(temp2Zombie)
                 
                 temp2Zombie.position.x = tempZombie.position.x - background.size.width*6
-                let actions2 = SKAction.sequence([SKAction.moveTo(y: -size.height/2-temp2Zombie.size.height, duration: 10),SKAction.removeFromParent()])
-                let scale2 = SKAction.sequence([SKAction.scale(to: 2, duration: 10)])
+                let actions2 = SKAction.sequence([SKAction.moveTo(y: -size.height/2-temp2Zombie.size.height, duration: TimeInterval(zombieSpeed)),SKAction.removeFromParent()])
+                let scale2 = SKAction.sequence([SKAction.scale(to: 2, duration: TimeInterval(zombieSpeed))])
                 temp2Zombie.run(scale2)
                 temp2Zombie.run(actions2)
                 
@@ -376,6 +436,14 @@ class GameScene: SKScene {
             {
                 zombieCount += zombieCount*1.25
                 timer = 15
+                zNumb = 0
+                ready = false
+            }
+            if roundNumb > 15 && roundNumb < 25
+            {
+                zombieCount += zombieCount*1.5
+                timer = 15
+                zNumb = 0
                 ready = false
             }
             
@@ -402,14 +470,47 @@ class GameScene: SKScene {
         }
         print("Timer:\(timer)")
     }//time func
+    
     func updateLabels()
     {
+        //RoundLabel
         roundLabel.position.x = myCamera!.position.x + size.width/2 - 100
-        roundLabel2.position.x = myCamera!.position.x + size.width/2 - 100
         roundLabel.text = "Round #"
-        roundLabel2.text = "\(roundNumb)"
-    }
         
+        //RoundLabel2
+        roundLabel2.position.x = myCamera!.position.x + size.width/2 - 100
+        roundLabel2.text = "\(roundNumb)"
+        
+        //Score
+        scoreInt = Int(score)
+        scoreLabel.text = "Score: \(scoreInt)"
+        scoreLabel.position.x = myCamera!.position.x
+    }
+    func updateGameState()
+    {
+        if gameOver == false && gamePaused == false
+        {
+            updateLabels()
+            time()
+            moveCamera()
+            rounds()
+        }
+        if gameOver == true
+        {
+            
+        }
+        if gamePaused == true
+        {
+            if gamePaused == true
+            {
+                menuPic.isHidden = false
+                
+            }
+        }
+        
+    }//GameState
+    
+    
     
     
 
@@ -419,13 +520,11 @@ class GameScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         timer = timer - 1/60
-        print("zNumb:\(zNumb)")
-        print("zombieCount:\(zombieCount)")
+        //print("zNumb:\(zNumb)")
+        //print("zombieCount:\(zombieCount)")
         
-        updateLabels()
-        time()
-        moveCamera()
-        rounds()
+    
+        updateGameState()
         // Called before each frame is rendered
     }
 }
