@@ -31,6 +31,9 @@ class GameScene: SKScene {
     var roundLabel = SKLabelNode(fontNamed: "Chalkduster")
     var roundLabel2 = SKLabelNode(fontNamed: "Chalkduster")
     var scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
+    var upgrade1Label = SKLabelNode(fontNamed: "Chalkduster")
+    var upgrade2Label = SKLabelNode(fontNamed: "Chalkduster")
+    var upgrade3Label = SKLabelNode(fontNamed: "Chalkduster")
 
     //CameraNode
     var myCamera:SKCameraNode?
@@ -45,9 +48,16 @@ class GameScene: SKScene {
     var cheater:Bool=false
     var gameOver:Bool=false
     var gamePaused:Bool=false
+    var canUpgrade1:Bool=false
+    var canUpgrade2:Bool=false
+    var upgrade2:Bool=false
     
     //Int
     var zombieNumb:Int=0
+    var upgradeNumb:Int=0
+    var roundNumb:Int=0
+    var scoreInt:Int=0
+    var menuNumb:Int=0
     
     //CGFloats
     var timer:CGFloat=0
@@ -56,10 +66,6 @@ class GameScene: SKScene {
     var zNumb:CGFloat=0
     var score:CGFloat=0
     
-    //Integers
-    var roundNumb:Int=0
-    var scoreInt:Int=0
-    var menuNumb:Int=0
     
     //
     let zombie=ZombieClass()
@@ -158,6 +164,27 @@ class GameScene: SKScene {
         menuPic.zPosition = 30
         addChild(menuPic)
         menuPic.isHidden = true
+        
+        //Upgrade 1 Label
+        upgrade1Label.text = "Press 1 to upgrade your gun to fully automatic - 500"
+        upgrade1Label.position.y = scoreLabel.position.y - 70
+        upgrade1Label.position.x = menuPic.position.x
+        upgrade1Label.fontColor = NSColor.red
+        upgrade1Label.zPosition = 31
+        upgrade1Label.fontSize = 28
+        addChild(upgrade1Label)
+        upgrade1Label.isHidden = true
+        
+        //Upgrade 1 Label
+        upgrade2Label.text = "Press 2 to upgrade your turn speed - 1000"
+        upgrade2Label.position.y = upgrade1Label.position.y - 50
+        upgrade2Label.position.x = menuPic.position.x
+        upgrade2Label.fontColor = NSColor.red
+        upgrade2Label.zPosition = 31
+        upgrade2Label.fontSize = 30
+        addChild(upgrade2Label)
+        upgrade2Label.isHidden = true
+        
         
         
         
@@ -284,9 +311,8 @@ class GameScene: SKScene {
         //S
         case 1:
             print(myCamera!.position.x)
-        //Q
-        case 12:
-            menuNumb+=1
+        case 5:
+            score += 250
         //E
         case 14:
             if cheater==false
@@ -305,7 +331,25 @@ class GameScene: SKScene {
         //T
         case 17:
             roundNumb+=1
-            
+        //N
+        case 45:
+            if gamePaused==false
+            {
+              gamePaused=true
+            }
+        //M
+        case 46:
+            if gamePaused==true
+            {
+                gamePaused=false
+            }
+        //1
+        case 18:
+            if canUpgrade1 == true && gamePaused == true
+            {
+                upgrade1 = true
+                upgradeNumb += 1
+            }
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
@@ -318,13 +362,6 @@ class GameScene: SKScene {
         //D
         case 2:
             rightPressed=false
-        //Q
-        case 12:
-            if menuNumb > 1
-            {
-                menuNumb = 0
-            }
-        
         //E
         case 14:
             if cheater==true
@@ -468,7 +505,7 @@ class GameScene: SKScene {
                 timer = 0
             }
         }
-        print("Timer:\(timer)")
+        //print("Timer:\(timer)")
     }//time func
     
     func updateLabels()
@@ -490,7 +527,6 @@ class GameScene: SKScene {
     {
         if gameOver == false && gamePaused == false
         {
-            updateLabels()
             time()
             moveCamera()
             rounds()
@@ -501,17 +537,47 @@ class GameScene: SKScene {
         }
         if gamePaused == true
         {
-            if gamePaused == true
-            {
-                menuPic.isHidden = false
-                
-            }
+            menuPic.position.x = myCamera!.position.x
+            menuPic.isHidden = false
+            upgrade1Label.position.x = myCamera!.position.x
+            upgrade1Label.isHidden = false
+            upgrade2Label.isHidden = false
+            upgrade2Label.position.x = myCamera!.position.x
+            
+        }
+        if gamePaused == false
+        {
+            menuPic.isHidden = true
+            upgrade1Label.isHidden = true
+            upgrade2Label.isHidden = true
         }
         
     }//GameState
     
-    
-    
+    func canYouUpgrade()
+    {
+        if score > 499
+        {
+            canUpgrade1 = true
+            upgrade1Label.fontColor = NSColor.black
+            if upgrade1 == true && upgradeNumb == 1
+            {
+                score -= 500
+                upgradeNumb += 1
+                upgrade1Label.fontColor = NSColor.yellow
+            }
+        if score > 1000
+        {
+            canUpgrade2 = true
+            upgrade2Label.fontColor = NSColor.black
+            if upgrade2 == true && upgradeNumb == 2
+            {
+                
+            }
+        }
+        }
+    }//can you upgrade?
+ 
     
 
     
@@ -520,10 +586,11 @@ class GameScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         timer = timer - 1/60
+        print("UpgradeNumb: \(upgradeNumb)")
         //print("zNumb:\(zNumb)")
         //print("zombieCount:\(zombieCount)")
-        
-    
+        updateLabels()
+        canYouUpgrade()
         updateGameState()
         // Called before each frame is rendered
     }
