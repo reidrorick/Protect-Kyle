@@ -58,9 +58,12 @@ class GameScene: SKScene {
     var roundNumb:Int=0
     var scoreInt:Int=0
     var menuNumb:Int=0
+    var gotHit:Int=0
+    var health:Int=10
     
     //CGFloats
     var timer:CGFloat=0
+    var timer2:CGFloat=0
     var relativeDist:CGFloat=0
     var zombieCount:CGFloat=15
     var zNumb:CGFloat=0
@@ -75,6 +78,9 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         
         theView=view
+        myCamera=SKCameraNode()
+        self.camera=myCamera
+        addChild(myCamera!)
         
         // Create a tracking area object with self as the owner (i.e., the recipient of mouse-tracking messages
         let trackingArea = NSTrackingArea(rect: view.frame, options: [.activeInKeyWindow, .mouseMoved], owner: self, userInfo: nil)
@@ -138,24 +144,26 @@ class GameScene: SKScene {
         
         //RoundLabel1
         roundLabel.position.y = size.height/2 - 50
+        roundLabel.position.x = 400
         roundLabel.fontColor = NSColor.blue
         roundLabel.zPosition = 10
         roundLabel.fontSize=26
-        addChild(roundLabel)
+        myCamera!.addChild(roundLabel)
         
         //RoundLabel2
         roundLabel2.position.y = size.height/2 - 90
+        roundLabel2.position.x = 400
         roundLabel2.fontColor = NSColor.blue
         roundLabel2.zPosition = 10
         roundLabel2.fontSize=32
-        addChild(roundLabel2)
+        myCamera!.addChild(roundLabel2)
         
         //ScoreLabel
         scoreLabel.position.y = size.height/2 - 80
         scoreLabel.fontColor = NSColor.blue
         scoreLabel.zPosition = 10
         scoreLabel.fontSize=32
-        addChild(scoreLabel)
+        myCamera!.addChild(scoreLabel)
         
         //MenuPic
         menuPic.xScale = 1.5
@@ -212,9 +220,7 @@ class GameScene: SKScene {
         
         
        
-        myCamera=SKCameraNode()
-        self.camera=myCamera
-        addChild(myCamera!)
+
        
     }//didMove
     
@@ -297,7 +303,7 @@ class GameScene: SKScene {
     
     override func mouseMoved(with event: NSEvent) {
         target.position=event.location(in: self)
-        print(target.position)
+        //print(target.position)
     }
     
     override func keyDown(with event: NSEvent) {
@@ -327,6 +333,7 @@ class GameScene: SKScene {
                 ready=true
                 roundNumb += 1
                 print("Round Number:\(roundNumb)")
+                timer2=0
             }
         //T
         case 17:
@@ -409,11 +416,11 @@ class GameScene: SKScene {
         
         let zombieSpeed:Int = 20/roundNumb
         
-        let actions = SKAction.sequence([SKAction.moveTo(y: -size.height/2-tempZombie.size.height, duration: TimeInterval(zombieSpeed)),SKAction.removeFromParent()])
+        let actions = SKAction.sequence([SKAction.moveTo(y: -size.height/2-tempZombie.size.height, duration: TimeInterval(zombieSpeed))])
         
         let scale = SKAction.sequence([SKAction.scale(to: 2, duration: TimeInterval(zombieSpeed))])
-        tempZombie.run(actions)
-        tempZombie.run(scale)
+        tempZombie.run(actions, withKey: "actions")
+        tempZombie.run(scale, withKey: "scale")
         
         if tempZombie.position.x >= background.size.width*5 - background.size.width/2
             {
@@ -429,14 +436,16 @@ class GameScene: SKScene {
                 temp2Zombie.position.x = tempZombie.position.x - background.size.width*6
                 let actions2 = SKAction.sequence([SKAction.moveTo(y: -size.height/2-temp2Zombie.size.height, duration: TimeInterval(zombieSpeed)),SKAction.removeFromParent()])
                 let scale2 = SKAction.sequence([SKAction.scale(to: 2, duration: TimeInterval(zombieSpeed))])
-                temp2Zombie.run(scale2)
-                temp2Zombie.run(actions2)
+                temp2Zombie.run(scale2, withKey:"scale")
+                temp2Zombie.run(actions2, withKey:"actions")
                 
                 
                 
             }//copy zombie
             tempZombie.name = "Zombie\(zNumb)"
             zNumb += 1
+        
+        
         
         }//spawn zombies
     func rounds()
@@ -449,7 +458,7 @@ class GameScene: SKScene {
                 if node.name!.contains("Zombie")
                 {
                     counter += 1
-                    print("Counter:\(counter)")
+                    //print("Counter:\(counter)")
                 }
             }
         }//zombies on screen counter
@@ -511,17 +520,14 @@ class GameScene: SKScene {
     func updateLabels()
     {
         //RoundLabel
-        roundLabel.position.x = myCamera!.position.x + size.width/2 - 100
         roundLabel.text = "Round #"
         
         //RoundLabel2
-        roundLabel2.position.x = myCamera!.position.x + size.width/2 - 100
         roundLabel2.text = "\(roundNumb)"
         
         //Score
         scoreInt = Int(score)
         scoreLabel.text = "Score: \(scoreInt)"
-        scoreLabel.position.x = myCamera!.position.x
     }
     func updateGameState()
     {
@@ -530,6 +536,7 @@ class GameScene: SKScene {
             time()
             moveCamera()
             rounds()
+            changeHealth()
         }
         if gameOver == true
         {
@@ -577,18 +584,40 @@ class GameScene: SKScene {
         }
         }
     }//can you upgrade?
+    func changeHealth()
+    {
+        health -= gotHit
+    }//Health & Gameover
  
-    
+
 
     
     
     
     
     override func update(_ currentTime: TimeInterval) {
+        for zombie in self.children
+        {
+            if zombie.name != nil
+            {
+                if zombie.name!.contains("Zombie")
+                {
+                   if zombie.action(forKey: "actions") == nil && timer2 > 1.5
+                   {
+                        print("Got Hit: \(gotHit)")
+                        health -= 10
+                        zombie.removeFromParent()
+                    print("name: \(zombie.name!)")
+                    }
+                }
+            }
+        }//Health?
         timer = timer - 1/60
-        print("UpgradeNumb: \(upgradeNumb)")
-        //print("zNumb:\(zNumb)")
-        //print("zombieCount:\(zombieCount)")
+
+        
+        timer2 += 1/60
+
+        print("Health: \(health)")
         updateLabels()
         canYouUpgrade()
         updateGameState()
