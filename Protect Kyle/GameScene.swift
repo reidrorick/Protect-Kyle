@@ -34,7 +34,15 @@ class GameScene: SKScene {
     var upgrade1Label = SKLabelNode(fontNamed: "Chalkduster")
     var upgrade2Label = SKLabelNode(fontNamed: "Chalkduster")
     var upgrade3Label = SKLabelNode(fontNamed: "Chalkduster")
-
+    var healthLabel = SKLabelNode(fontNamed: "Chalkduster")
+    var healthNumb = SKLabelNode(fontNamed: "Chalkduster")
+    var upgradeLabel = SKLabelNode(fontNamed: "Chalkduster")
+    var introLabel1 = SKLabelNode(fontNamed: "ChalkDuster")
+    var introLabel2 = SKLabelNode(fontNamed: "ChalkDuster")
+    var introLabel3 = SKLabelNode(fontNamed: "ChalkDuster")
+    var gameOverLabel = SKLabelNode(fontNamed: "Chalkduster")
+    
+    
     //CameraNode
     var myCamera:SKCameraNode?
    
@@ -48,18 +56,20 @@ class GameScene: SKScene {
     var cheater:Bool=false
     var gameOver:Bool=false
     var gamePaused:Bool=false
-    var canUpgrade1:Bool=false
-    var canUpgrade2:Bool=false
+    var alreadyBought1=false
+    var alreadyBought2=false
+    var alreadyBought3=false
     var upgrade2:Bool=false
+    var healthUpgrade:Bool=false
     
     //Int
     var zombieNumb:Int=0
-    var upgradeNumb:Int=0
     var roundNumb:Int=0
     var scoreInt:Int=0
+    var zombieCounter:Int=0
     var menuNumb:Int=0
     var gotHit:Int=0
-    var health:Int=10
+    var health:Int=100
     
     //CGFloats
     var timer:CGFloat=0
@@ -173,9 +183,19 @@ class GameScene: SKScene {
         addChild(menuPic)
         menuPic.isHidden = true
         
+        //HealthUpgrade
+        upgradeLabel.text = "Press 0 to refill your health - 300"
+        upgradeLabel.position.y = 234
+        upgradeLabel.position.x = menuPic.position.x
+        upgradeLabel.fontColor = NSColor.red
+        upgradeLabel.zPosition = 31
+        upgradeLabel.fontSize = 30
+        addChild(upgradeLabel)
+        upgradeLabel.isHidden = true
+        
         //Upgrade 1 Label
         upgrade1Label.text = "Press 1 to upgrade your gun to fully automatic - 500"
-        upgrade1Label.position.y = scoreLabel.position.y - 70
+        upgrade1Label.position.y = upgradeLabel.position.y - 50
         upgrade1Label.position.x = menuPic.position.x
         upgrade1Label.fontColor = NSColor.red
         upgrade1Label.zPosition = 31
@@ -183,7 +203,7 @@ class GameScene: SKScene {
         addChild(upgrade1Label)
         upgrade1Label.isHidden = true
         
-        //Upgrade 1 Label
+        //Upgrade 2 Label
         upgrade2Label.text = "Press 2 to upgrade your turn speed - 1000"
         upgrade2Label.position.y = upgrade1Label.position.y - 50
         upgrade2Label.position.x = menuPic.position.x
@@ -192,6 +212,52 @@ class GameScene: SKScene {
         upgrade2Label.fontSize = 30
         addChild(upgrade2Label)
         upgrade2Label.isHidden = true
+        
+        //healthLabel
+        healthLabel.text = "Health:"
+        healthLabel.position.y = roundLabel.position.y
+        healthLabel.position.x = -400
+        healthLabel.fontColor = NSColor.blue
+        healthLabel.zPosition = 31
+        healthLabel.fontSize = 30
+        myCamera!.addChild(healthLabel)
+        
+        //healthNumb
+        healthNumb.position.y = roundLabel2.position.y
+        healthNumb.position.x = -400
+        healthNumb.fontColor = NSColor.blue
+        healthNumb.zPosition = 31
+        healthNumb.fontSize = 30
+        myCamera!.addChild(healthNumb)
+        
+        //
+        introLabel1.text = "Press R to start the round!"
+        introLabel1.position.y = 250
+        introLabel1.fontColor = NSColor.blue
+        introLabel1.zPosition = 30
+        addChild(introLabel1)
+        
+        introLabel2.text = "Press N to access the menu between rounds!"
+        introLabel2.position.y = 200
+        introLabel2.fontColor = NSColor.blue
+        introLabel2.zPosition = 30
+        addChild(introLabel2)
+        
+        introLabel3.text = "Press M to get out of the menu"
+        introLabel3.position.y = 150
+        introLabel3.fontColor = NSColor.blue
+        introLabel3.zPosition = 30
+        addChild(introLabel3)
+        
+        gameOverLabel.text = "You Lose!"
+        gameOverLabel.position.y = 150
+        gameOverLabel.fontColor = NSColor.red
+        gameOverLabel.zPosition = 40
+        gameOverLabel.fontSize = 40
+        addChild(gameOverLabel)
+        gameOverLabel.isHidden = true
+        
+        
         
         
         
@@ -291,8 +357,12 @@ class GameScene: SKScene {
     }//mouse down
     
     override func mouseDragged(with event: NSEvent) {
-        self.touchMoved(toPoint: event.location(in: self))
-        target.position=event.location(in: self)
+        if gameOver == false
+        {
+            self.touchMoved(toPoint: event.location(in: self))
+            target.position=event.location(in: self)
+        }
+        
         
     }
     
@@ -302,7 +372,11 @@ class GameScene: SKScene {
     }
     
     override func mouseMoved(with event: NSEvent) {
-        target.position=event.location(in: self)
+        if gameOver == false
+        {
+           target.position=event.location(in: self)
+        }
+        
         //print(target.position)
     }
     
@@ -328,12 +402,17 @@ class GameScene: SKScene {
             }
         //R
         case 15:
-            if timer < 1 && ready == false
+            
+            if zombieCounter < 2 && ready == false
             {
+                introLabel1.isHidden = true
+                introLabel2.isHidden = true
+                introLabel3.isHidden = true
                 ready=true
                 roundNumb += 1
                 print("Round Number:\(roundNumb)")
                 timer2=0
+                alreadyBought3 = false
             }
         //T
         case 17:
@@ -342,7 +421,10 @@ class GameScene: SKScene {
         case 45:
             if gamePaused==false
             {
-              gamePaused=true
+                introLabel1.isHidden = true
+                introLabel2.isHidden = true
+                introLabel3.isHidden = true
+                gamePaused=true
             }
         //M
         case 46:
@@ -352,11 +434,23 @@ class GameScene: SKScene {
             }
         //1
         case 18:
-            if canUpgrade1 == true && gamePaused == true
+            if alreadyBought1 == false && score > 499 && gamePaused == true
             {
                 upgrade1 = true
-                upgradeNumb += 1
             }
+        //2
+        case 19:
+            if alreadyBought2 == false && gamePaused == true && score > 999
+            {
+                upgrade2 = true
+            }
+        case 29:
+            if alreadyBought3 == false && gamePaused == true && score > 299
+            {
+                healthUpgrade = true
+                health = 100
+            }
+            
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
         }
@@ -383,13 +477,21 @@ class GameScene: SKScene {
     
     func moveCamera()
     {
-        if rightPressed==true
+        if rightPressed == true && upgrade2 == false
         {
             myCamera!.position.x += 15
         }
-        if leftPressed==true
+        if rightPressed == true && upgrade2 == true
+        {
+            myCamera!.position.x += 25
+        }
+        if leftPressed == true && upgrade2 == false
         {
             myCamera!.position.x -= 15
+        }
+        if leftPressed == true && upgrade2 == true
+        {
+            myCamera!.position.x -= 25
         }
         if myCamera!.position.x > background.size.width*5 - 15 && rightPressed == true
         {
@@ -458,13 +560,14 @@ class GameScene: SKScene {
                 if node.name!.contains("Zombie")
                 {
                     counter += 1
-                    //print("Counter:\(counter)")
+                    zombieCounter = counter
+                    print("Counter:\(counter)")
                 }
             }
         }//zombies on screen counter
         
         
-        if zNumb < zombieCount && timer ==  0 && ready == true
+        if zNumb < zombieCount && ready == true
         {
             spawnZombies()
             //print(zNumb)
@@ -528,6 +631,10 @@ class GameScene: SKScene {
         //Score
         scoreInt = Int(score)
         scoreLabel.text = "Score: \(scoreInt)"
+        
+        //HealthLabel
+        healthNumb.text = "\(health)%"
+        
     }
     func updateGameState()
     {
@@ -538,11 +645,16 @@ class GameScene: SKScene {
             rounds()
             changeHealth()
         }
-        if gameOver == true
+        if health == 0
         {
-            
+            gameOver = true
+            if gameOver == true
+            {
+                gameOverLabel.isHidden = false
+            }
         }
-        if gamePaused == true
+        
+        if gamePaused == true && gameOver == false
         {
             menuPic.position.x = myCamera!.position.x
             menuPic.isHidden = false
@@ -550,44 +662,71 @@ class GameScene: SKScene {
             upgrade1Label.isHidden = false
             upgrade2Label.isHidden = false
             upgrade2Label.position.x = myCamera!.position.x
+            upgradeLabel.position.x = myCamera!.position.x
+            upgradeLabel.isHidden = false
             
         }
-        if gamePaused == false
+        if gamePaused == false && gameOver == false
         {
             menuPic.isHidden = true
             upgrade1Label.isHidden = true
             upgrade2Label.isHidden = true
+            upgradeLabel.isHidden = true
         }
         
     }//GameState
     
-    func canYouUpgrade()
-    {
-        if score > 499
-        {
-            canUpgrade1 = true
-            upgrade1Label.fontColor = NSColor.black
-            if upgrade1 == true && upgradeNumb == 1
-            {
-                score -= 500
-                upgradeNumb += 1
-                upgrade1Label.fontColor = NSColor.yellow
-            }
-        if score > 1000
-        {
-            canUpgrade2 = true
-            upgrade2Label.fontColor = NSColor.black
-            if upgrade2 == true && upgradeNumb == 2
-            {
-                
-            }
-        }
-        }
-    }//can you upgrade?
+
+    
+
     func changeHealth()
     {
         health -= gotHit
     }//Health & Gameover
+    
+    func upgradeScore()
+    {
+        if score > 299
+        {
+            if alreadyBought3 == false
+            {
+                upgradeLabel.fontColor = NSColor.black
+                if healthUpgrade == true
+                {
+                    score -= 300
+                    upgradeLabel.fontColor = NSColor.yellow
+                    alreadyBought3 = true
+                    
+                }
+            }
+        }
+        if score > 499
+        {
+            if alreadyBought1 == false
+            {
+                upgrade1Label.fontColor = NSColor.black
+                if upgrade1 == true
+                {
+                    score -= 500
+                    upgrade1Label.fontColor = NSColor.yellow
+                    alreadyBought1 = true
+                }
+            }
+        }
+        if score > 999
+        {
+            if alreadyBought2 == false
+            {
+                upgrade2Label.fontColor = NSColor.black
+                if upgrade2 == true
+                {
+                    score -= 1000
+                    upgrade2Label.fontColor = NSColor.yellow
+                    alreadyBought2 = true
+                }
+            }
+        }
+    }//upgradeScore
  
 
 
@@ -617,11 +756,12 @@ class GameScene: SKScene {
         
         timer2 += 1/60
 
-        print("Health: \(health)")
+        //print("Counter: \(counter)")
         updateLabels()
-        canYouUpgrade()
+        upgradeScore()
         updateGameState()
         // Called before each frame is rendered
+        
     }
 }
 
